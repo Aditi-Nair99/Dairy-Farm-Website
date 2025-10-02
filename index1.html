@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Mylk Dairy Farm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-dark: #0a1930;
+            --primary-medium: #1a3a6c;
+            --primary-light: #2a5a9c;
+            --accent-blue: #4cc9f0;
+            --accent-glow: #8ce4ff;
+            --text-light: #f0f8ff;
+            --card-bg: #162b4d;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
+            --text-color: #f0f8ff;
+            --header-bg: rgba(10, 25, 48, 0.9);
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+        }
+
+        .light-theme {
+            --primary-dark: #e6f0ff;
+            --primary-medium: #a8c6ff;
+            --primary-light: #7aacff;
+            --accent-blue: #0077cc;
+            --accent-glow: #005599;
+            --text-light: #1a1a1a;
+            --card-bg: #ffffff;
+            --background: linear-gradient(135deg, #e6f0ff, #c5dcff);
+            --text-color: #1a1a1a;
+            --header-bg: rgba(230, 240, 255, 0.9);
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--background);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding-bottom: 50px;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+
+        header {
+            padding: 15px 5%;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0; z-index: 100;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 15px; }
+
+        .logo-text {
+            font-family: var(--font-heading); font-size: 2rem; font-weight: 700;
+            color: var(--text-color);
+            text-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+            animation: glow 2s infinite alternate; letter-spacing: 1px;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow); }
+            to { text-shadow: 0 0 15px var(--accent-blue), 0 0 25px var(--accent-blue); }
+        }
+        .dancing-cow { font-size: 2.4rem; animation: dance 1.5s infinite alternate; filter: drop-shadow(0 0 5px var(--accent-blue)); }
+        @keyframes dance { from { transform: rotate(-10deg) translateY(0); } to { transform: rotate(10deg) translateY(-8px); } }
+
+        .nav-links { display: flex; gap: 18px; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-color); font-weight: 500;
+            padding: 8px 14px; border-radius: 20px; transition: all 0.3s ease;
+            font-family: var(--font-heading); font-size: 0.95rem;
+        }
+        .nav-links a:hover { background: var(--primary-light); box-shadow: 0 0 10px var(--accent-blue); }
+
+        .theme-toggle {
+            background: var(--primary-medium); border: none; width: 50px; height: 26px;
+            border-radius: 13px; padding: 3px; cursor: pointer; display: flex;
+            align-items: center; justify-content: flex-start; transition: all 0.3s ease;
+        }
+        .theme-toggle span {
+            display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: white; transition: all 0.3s ease;
+        }
+        .light-theme .theme-toggle { justify-content: flex-end; }
+
+        .cart-icon { position: relative; cursor: pointer; padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease; }
+        .cart-icon:hover { background: var(--primary-light); box-shadow: 0 0 10px var(--accent-blue); }
+        .cart-count {
+            position: absolute; top: -8px; right: -8px; background: var(--accent-blue); color: white;
+            font-size: 12px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+
+        .hero {
+            text-align: center; padding: 80px 5%;
+            background: url('https://images.unsplash.com/photo-1516674782849-67c5e275e1c5?auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            position: relative; border-bottom: 3px solid var(--accent-blue);
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0; background: rgba(10, 25, 48, 0.7); transition: all 0.3s ease;
+        }
+        .light-theme .hero::before { background: rgba(230, 240, 255, 0.7); }
+        .hero h1, .hero p, .hero a { position: relative; z-index: 1; }
+        .hero h1 { font-size: 3.2rem; margin-bottom: 20px; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); font-family: var(--font-heading); font-weight: 700; }
+        .hero p { font-size: 1.15rem; max-width: 900px; margin: 0 auto 30px; line-height: 1.7; font-family: var(--font-body); }
+        .cta-button {
+            display: inline-block; padding: 15px 40px; background: linear-gradient(45deg, var(--primary-light), var(--accent-blue));
+            color: white; text-decoration: none; font-weight: bold; border-radius: 30px; box-shadow: 0 5px 15px rgba(76, 201, 240, 0.4);
+            transition: all 0.3s ease; font-family: var(--font-heading); font-size: 1.05rem;
+        }
+        .cta-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(76, 201, 240, 0.6); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .section-title {
+            text-align: center; font-size: 2.2rem; margin-bottom: 40px; color: var(--accent-blue);
+            position: relative; font-family: var(--font-heading); font-weight: 700;
+        }
+        .section-title::after { content: ''; display: block; width: 100px; height: 4px; background: var(--accent-blue); margin: 10px auto; border-radius: 2px; }
+
+        .products {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 20px;
+        }
+        .product-card {
+            background: var(--card-bg); border-radius: 15px; overflow: hidden; box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid var(--primary-medium);
+        }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(76, 201, 240, 0.2); }
+        .product-img { height: 220px; background: linear-gradient(45deg, var(--primary-medium), var(--primary-light)); display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .product-card:hover .product-img img { transform: scale(1.1); }
+        .product-info { padding: 20px; }
+        .product-info h3 { font-size: 1.25rem; margin-bottom: 8px; color: var(--accent-blue); font-family: var(--font-heading); }
+        .product-info p { margin-bottom: 12px; font-family: var(--font-body); color: var(--text-color); }
+        .product-price { font-size: 1.4rem; font-weight: 700; color: var(--text-color); margin: 10px 0; font-family: var(--font-heading); }
+        .quantity-controls { display: flex; align-items: center; margin: 10px 0; gap: 10px; }
+        .quantity-btn { width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--primary-light); color: white; font-weight: bold; cursor: pointer; transition: background 0.3s ease; }
+        .quantity-btn:hover { background: var(--accent-blue); }
+        .quantity-display { font-size: 1.1rem; font-weight: bold; min-width: 30px; text-align: center; color: var(--text-color); }
+        .buy-btn { display: block; width: 100%; padding: 12px; background: var(--primary-light); color: white; border: none; border-radius: 8px; font-size: 1.05rem; cursor: pointer; transition: background 0.3s ease; font-family: var(--font-heading); }
+        .buy-btn:hover { background: var(--accent-blue); }
+
+        .cow-market { background: var(--card-bg); border-radius: 15px; padding: 30px; margin-top: 40px; box-shadow: var(--card-shadow); border: 1px solid var(--primary-medium); }
+        .cow-container { display: flex; justify-content: space-between; gap: 30px; margin-top: 30px; }
+        .buy-cows, .sell-cows { flex: 1; background: var(--primary-medium); padding: 25px; border-radius: 15px; text-align: center; border: 1px solid var(--primary-light); }
+        .cow-img { height: 220px; border-radius: 10px; overflow: hidden; margin: 20px 0; box-shadow: var(--card-shadow); }
+        .cow-img img { width: 100%; height: 100%; object-fit: cover; }
+        .cow-price { font-size: 1.6rem; margin: 15px 0; color: var(--text-color); font-family: var(--font-heading); }
+        .cow-btn { padding: 14px 26px; background: linear-gradient(45deg, var(--primary-light), var(--accent-blue)); color: white; border: none; border-radius: 8px; font-size: 1.05rem; cursor: pointer; transition: transform 0.3s ease; font-family: var(--font-heading); }
+        .cow-btn:hover { transform: scale(1.04); }
+
+        .cart-section { margin-top: 60px; background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: var(--card-shadow); border: 1px solid var(--primary-medium); }
+        .cart-items { margin-top: 10px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; border-bottom: 1px solid var(--primary-medium); gap: 12px; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 700; font-size: 1.05rem; font-family: var(--font-heading); color: var(--text-color); }
+        .cart-item-price { color: var(--accent-blue); font-weight: 600; font-family: var(--font-body); }
+        .cart-item-quantity { display: flex; align-items: center; gap: 10px; }
+        .cart-item-total { font-weight: 700; min-width: 100px; text-align: right; color: var(--text-color); font-family: var(--font-heading); }
+        .remove-btn { background: var(--danger); color: white; border: none; border-radius: 6px; padding: 7px 10px; cursor: pointer; font-family: var(--font-body); }
+
+        .cart-summary { margin-top: 22px; padding-top: 16px; border-top: 2px solid var(--primary-light); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; padding: 4px 0; font-family: var(--font-body); color: var(--text-color); }
+        .summary-total { font-size: 1.4rem; font-weight: 800; color: var(--accent-blue); border-top: 1px solid var(--primary-light); padding-top: 10px; font-family: var(--font-heading); }
+        .checkout-btn { display: block; width: 100%; padding: 15px; background: linear-gradient(45deg, var(--primary-light), var(--accent-blue)); color: white; border: none; border-radius: 8px; font-size: 1.05rem; margin-top: 16px; cursor: pointer; transition: all 0.3s ease; font-family: var(--font-heading); }
+        .checkout-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(76, 201, 240, 0.4); }
+
+        .checkout-section { margin-top: 30px; padding: 24px; background: var(--primary-medium); border-radius: 15px; display: none; border: 1px solid var(--primary-light); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; font-family: var(--font-heading); color: var(--text-color); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--primary-light);
+            background: var(--card-bg); color: var(--text-color); font-family: var(--font-body);
+        }
+
+        .payment-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 14px; }
+        .payment-method { background: var(--card-bg); padding: 18px; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent; }
+        .payment-method:hover { border-color: var(--accent-blue); }
+        .payment-method.selected { border-color: var(--accent-blue); box-shadow: 0 0 15px rgba(76, 201, 240, 0.4); }
+        .payment-icon { font-size: 2.2rem; margin-bottom: 8px; color: var(--accent-blue); }
+        .confirm-btn { display: block; width: 100%; padding: 15px; background: linear-gradient(45deg, var(--success), #2E7D32); color: white; border: none; border-radius: 8px; font-size: 1.05rem; margin-top: 20px; cursor: pointer; transition: all 0.3s ease; font-family: var(--font-heading); }
+        .confirm-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4); }
+
+        .order-success { text-align: center; padding: 30px; background: var(--card-bg); border-radius: 15px; margin-top: 30px; display: none; border: 1px solid var(--primary-medium); }
+        .success-icon { font-size: 3.2rem; color: var(--success); margin-bottom: 12px; }
+
+        .about {
+            margin-top: 60px; background: var(--card-bg); padding: 30px; border-radius: 15px;
+            box-shadow: var(--card-shadow); border: 1px solid var(--primary-medium);
+        }
+        .about p { margin-bottom: 14px; }
+
+        .contact {
+            margin-top: 60px; background: var(--card-bg); padding: 30px; border-radius: 15px;
+            box-shadow: var(--card-shadow); border: 1px solid var(--primary-medium);
+        }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 16px; }
+        .contact-card { background: var(--primary-medium); padding: 18px; border-radius: 12px; border: 1px solid var(--primary-light); }
+        .socials a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-color); margin-right: 12px; margin-bottom: 10px; }
+        .socials a i { font-size: 1.2rem; color: var(--accent-blue); }
+
+        footer {
+            text-align: center; padding: 30px; margin-top: 60px;
+            background: var(--primary-dark); color: var(--text-color); font-family: var(--font-body);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .cow-container { flex-direction: column; }
+            .cart-item { flex-direction: column; align-items: flex-start; }
+            .cart-item-quantity { width: 100%; justify-content: space-between; }
+            .cart-item-total { text-align: left; width: 100%; margin-top: 8px; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav aria-label="Primary">
+        <div class="logo">
+            <div class="dancing-cow" aria-hidden="true">🐄</div>
+            <div class="logo-text">Mylk Dairy Farm</div>
+        </div>
+        <div class="nav-links">
+            <a href="#products">Products</a>
+            <a href="#cows">Buy/Sell Cows</a>
+            <a href="#about">About Us</a>
+            <a href="#contact">Contact</a>
+            <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+                <span></span>
+            </button>
+            <div class="cart-icon" role="button" aria-label="Open cart" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="cart-count" id="cart-count">0</div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Fresh Dairy Products & Healthy Cows</h1>
+    <p>At Mylk Dairy Farm, we provide the freshest milk, butter, ghee, paneer, and curd directly from our farm to your table. We also buy and sell healthy cows to maintain the quality of our dairy products.</p>
+    <a href="#products" class="cta-button">Explore Products</a>
+</section>
+  
+
+<div class="container">
+    <h2 class="section-title" id="products">Our Dairy Products</h2>
+    <div class="products">
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBLw8pHDmM2BH0OlzTNjOQL15dqcQO8n6Ypg&s" alt="Fresh Milk">
+            </div>
+            <div class="product-info">
+                <h3>Fresh Milk</h3>
+                <p>Pure, fresh milk from grass-fed cows. Packed with essential nutrients and vitamins.</p>
+                <div class="product-price">₹200 / liter</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('milk', -1)">-</button>
+                    <span class="quantity-display" id="milk-qty">0</span>
+                    <button class="quantity-btn" onclick="updateQuantity('milk', 1)">+</button>
+                </div>
+                <button class="buy-btn" onclick="addToCart('Milk', 200, 'milk')">Add to Cart</button>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://t3.ftcdn.net/jpg/02/10/30/54/360_F_210305493_vSBsVrBRyJvLBR5JLKmISAEy3xjfcERN.jpg" alt="Butter">
+            </div>
+            <div class="product-info">
+                <h3>Butter</h3>
+                <p>Rich, creamy butter made from the freshest milk. Perfect for cooking and baking.</p>
+                <div class="product-price">₹250 / kg</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('butter', -1)">-</button>
+                    <span class="quantity-display" id="butter-qty">0</span>
+                    <button class="quantity-btn" onclick="updateQuantity('butter', 1)">+</button>
+                </div>
+                <button class="buy-btn" onclick="addToCart('Butter', 250, 'butter')">Add to Cart</button>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://www.cookwithkushi.com/wp-content/uploads/2022/10/best_homemade_traditional_desi_ghee.jpg" alt="Ghee">
+            </div>
+            <div class="product-info">
+                <h3>Ghee</h3>
+                <p>Pure clarified butter with a rich aroma and taste. Enhances the flavor of your dishes.</p>
+                <div class="product-price">₹300 / kg</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('ghee', -1)">-</button>
+                    <span class="quantity-display" id="ghee-qty">0</span>
+                    <button class="quantity-btn" onclick="updateQuantity('ghee', 1)">+</button>
+                </div>
+                <button class="buy-btn" onclick="addToCart('Ghee', 300, 'ghee')">Add to Cart</button>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://www.indianhealthyrecipes.com/wp-content/uploads/2024/05/how-to-make-paneer-recipe.jpg" alt="Paneer">
+            </div>
+            <div class="product-info">
+                <h3>Paneer</h3>
+                <p>Fresh, soft paneer that's perfect for curries, grilling, or snacking.</p>
+                <div class="product-price">₹500 / kg</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('paneer', -1)">-</button>
+                    <span class="quantity-display" id="paneer-qty">0</span>
+                    <button class="quantity-btn" onclick="updateQuantity('paneer', 1)">+</button>
+                </div>
+                <button class="buy-btn" onclick="addToCart('Paneer', 500, 'paneer')">Add to Cart</button>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://legpiece.in/wp-content/uploads/2024/12/curd.jpeg" alt="Curd">
+            </div>
+            <div class="product-info">
+                <h3>Curd</h3>
+                <p>Creamy, probiotic-rich curd that's great for digestion and overall health.</p>
+                <div class="product-price">₹200 / liter</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('curd', -1)">-</button>
+                    <span class="quantity-display" id="curd-qty">0</span>
+                    <button class="quantity-btn" onclick="updateQuantity('curd', 1)">+</button>
+                </div>
+                <button class="buy-btn" onclick="addToCart('Curd', 200, 'curd')">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title" id="cows">Cow Market</h2>
+    <div class="cow-market">
+        <p>We buy and sell healthy, well-cared-for dairy cows to maintain the quality of our herd and products.</p>
+
+        <div class="cow-container">
+            <div class="buy-cows">
+                <h3>Buy a Cow</h3>
+                <div class="cow-img">
+                    <img src="https://media.istockphoto.com/id/496397741/photo/typical-dutch-red-and-white-milk-cow.jpg?s=612x612&w=0&k=20&c=juTog_zRhJIQa0sOUcwk5WH1AM3PRxhlvsIm4dywzK8=" alt="Dairy Cow for Sale">
+                </div>
+                <p>Purchase a healthy, milk-producing cow for your own dairy needs.</p>
+                <div class="cow-price">₹1,00,000</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('buy-cow', -1)">-</button>
+                    <span class="quantity-display" id="buy-cow-qty">0</span>
+                    <button class="quantity-btn" onclick="updateQuantity('buy-cow', 1)">+</button>
+                </div>
+                <button class="cow-btn" onclick="addToCart('Dairy Cow (Buy)', 100000, 'buy-cow')">Buy Now</button>
+            </div>
+
+            <div class="sell-cows">
+                <h3>Sell a Cow</h3>
+                <div class="cow-img">
+                    <img src="https://tiimg.tistatic.com/fp/1/005/645/dairy-cows-for-sale-759.jpg" alt="Sell Your Cow">
+                </div>
+                <p>Sell your healthy dairy cow to us. We ensure fair prices and good treatment.</p>
+                <div class="cow-price">₹50,000</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('sell-cow', -1)">-</button>
+                    <span class="quantity-display" id="sell-cow-qty">0</span>
+                    <button class="quantity-btn" onclick="updateQuantity('sell-cow', 1)">+</button>
+                </div>
+                <!-- Negative price reduces total (we're paying the customer) -->
+                <button class="cow-btn" onclick="addToCart('Dairy Cow (Sell)', -50000, 'sell-cow')">Sell Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-section">
+        <h2 class="section-title">Your Cart</h2>
+        <div class="cart-items" id="cart-items">
+            <p>Your cart is empty. Start adding products!</p>
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal">₹0</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (5%):</span>
+                <span id="cart-tax">₹0</span>
+            </div>
+            <div class="summary-row summary-total">
+                <span>Total:</span>
+                <span id="cart-total">₹0</span>
+            </div>
+        </div>
+
+        <button class="checkout-btn" onclick="showCheckout()">Proceed to Checkout</button>
+
+        <div class="checkout-section" id="checkout-section">
+            <h3>Billing Information</h3>
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="Enter your full name" autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter your phone number" autocomplete="tel" pattern="[0-9+\-()\s]{7,}">
+            </div>
+            <div class="form-group">
+                <label for="address">Delivery Address</label>
+                <textarea id="address" rows="3" placeholder="Enter your delivery address"></textarea>
+            </div>
+
+            <h3>Payment Method</h3>
+            <div class="payment-methods">
+                <div class="payment-method" onclick="selectPayment('card', event)">
+                    <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+                    <div>Credit/Debit Card</div>
+                </div>
+                <div class="payment-method" onclick="selectPayment('upi', event)">
+                    <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div>UPI Payment</div>
+                </div>
+                <div class="payment-method" onclick="selectPayment('cod', event)">
+                    <div class="payment-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div>Cash on Delivery</div>
+                </div>
+            </div>
+
+            <button class="confirm-btn" onclick="placeOrder()">Confirm Order</button>
+        </div>
+
+        <div class="order-success" id="order-success">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you for your purchase. Your order will be delivered soon.</p>
+            <p>Order ID: <span id="order-id">MF123456</span></p>
+        </div>
+    </div>
+
+    <h2 class="section-title" id="about">About Us</h2>
+    <section class="about">
+        <p><strong>Mow’s Dairy Farm</strong> is a family-run dairy based in <strong>Naya Raipur, Chhattisgarh</strong>, committed to delivering pure, nutritious, and responsibly produced dairy products. Our herd is raised on balanced, high-quality fodder, with routine veterinary care and humane handling practices to ensure animal welfare and consistent milk quality.</p>
+        <p>We follow strict hygiene and cold-chain protocols from milking to packaging. Every batch of milk undergoes quality checks for adulterants, fat/SNF levels, and freshness. Our product line includes <em>fresh milk, cultured curd, traditional ghee, creamy butter, and soft paneer</em>—each made in small batches to preserve taste, aroma, and nutrition.</p>
+        <p>Beyond products, we operate a transparent <strong>cow marketplace</strong> where responsible buyers and sellers can trade healthy dairy cows at fair prices. By improving genetics, nutrition, and housing, we help local farmers increase yield, reduce disease, and raise the bar for dairy in our region.</p>
+        <p>Our promise is simple: <strong>clean, honest dairy you can trust</strong>.</p>
+    </section>
+
+    <h2 class="section-title" id="contact">Contact</h2>
+    <section class="contact">
+        <div class="contact-grid">
+            <div class="contact-card">
+                <h3>Address</h3>
+                <p>Naya Raipur, Chhattisgarh, India</p>
+            </div>
+            <div class="contact-card">
+                <h3>Call / Email</h3>
+                <p><i class="fa-solid fa-phone"></i> <a href="tel:+919876543210" style="color:inherit">+91 98765 43210</a></p>
+                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:info@mowsdairyfarm.com" style="color:inherit">info@mowsdairyfarm.com</a></p>
+            </div>
+            <div class="contact-card">
+                <h3>Social</h3>
+                <div class="socials">
+                    <a href="https://www.linkedin.com/company/mows-dairy-farm" target="_blank" rel="noopener">
+                        <i class="fa-brands fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="https://www.instagram.com/mowsdairyfarm" target="_blank" rel="noopener">
+                        <i class="fa-brands fa-instagram"></i> Instagram
+                    </a>
+                    <a href="https://twitter.com/mowsdairyfarm" target="_blank" rel="noopener">
+                        <i class="fa-brands fa-x-twitter"></i> Twitter
+                    </a>
+                </div>
+                <small>Replace these links with your official profiles whenever ready.</small>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>© <span id="year"></span> Mow's Dairy Farm. All rights reserved.</p>
+    <p>Contact us: <a href="mailto:info@mowsdairyfarm.com" style="color:inherit">info@mowsdairyfarm.com</a> | <a href="tel:+919876543210" style="color:inherit">+91 98765 43210</a></p>
+</footer>
+
+<script>
+    // -------------------- STATE --------------------
+    let cart = [];
+    let quantities = {
+        'milk': 0, 'butter': 0, 'ghee': 0, 'paneer': 0, 'curd': 0, 'buy-cow': 0, 'sell-cow': 0
+    };
+    let selectedPayment = '';
+
+    // -------------------- UTIL --------------------
+    const fmtINR = (n) => '₹' + Number(n).toLocaleString('en-IN');
+
+    function saveState() {
+        const state = {
+            cart, quantities, selectedPayment,
+            themeLight: document.body.classList.contains('light-theme'),
+            draft: {
+                name: document.getElementById('name')?.value || '',
+                email: document.getElementById('email')?.value || '',
+                phone: document.getElementById('phone')?.value || '',
+                address: document.getElementById('address')?.value || ''
+            }
+        };
+        localStorage.setItem('mowState', JSON.stringify(state));
+    }
+
+    function loadState() {
+        const raw = localStorage.getItem('mowState');
+        if (!raw) return;
+        try {
+            const state = JSON.parse(raw);
+            cart = Array.isArray(state.cart) ? state.cart : [];
+            quantities = Object.assign(quantities, state.quantities || {});
+            selectedPayment = state.selectedPayment || '';
+            if (state.themeLight) document.body.classList.add('light-theme');
+
+            // restore quantities display
+            Object.keys(quantities).forEach(k => {
+                const el = document.getElementById(`${k}-qty`);
+                if (el) el.textContent = quantities[k];
+            });
+
+            // restore draft info
+            if (state.draft) {
+                if (document.getElementById('name')) document.getElementById('name').value = state.draft.name || '';
+                if (document.getElementById('email')) document.getElementById('email').value = state.draft.email || '';
+                if (document.getElementById('phone')) document.getElementById('phone').value = state.draft.phone || '';
+                if (document.getElementById('address')) document.getElementById('address').value = state.draft.address || '';
+            }
+        } catch (e) {
+            console.warn('Failed to parse saved state', e);
+        }
+    }
+
+    function persistAndNotify(message, type = 'success') {
+        saveState();
+        showNotification(message, type);
+    }
+
+    // -------------------- THEME --------------------
+    function toggleTheme() {
+        document.body.classList.toggle('light-theme');
+        saveState();
+    }
+
+    // -------------------- QUANTITY & CART --------------------
+    function updateQuantity(product, change) {
+        quantities[product] = Math.max(0, (quantities[product] || 0) + change);
+        const el = document.getElementById(`${product}-qty`);
+        if (el) el.textContent = quantities[product];
+        saveState();
+    }
+
+    function addToCart(name, price, product) {
+        if ((quantities[product] || 0) <= 0) {
+            showNotification(`Please select at least 1 quantity of ${name}`, 'warning');
+            return;
+        }
+        const existingIndex = cart.findIndex(item => item.name === name);
+        if (existingIndex >= 0) {
+            cart[existingIndex].quantity += quantities[product];
+            cart[existingIndex].total = cart[existingIndex].quantity * price;
+        } else {
+            cart.push({ name, price, quantity: quantities[product], total: quantities[product] * price, product });
+        }
+        quantities[product] = 0;
+        const qEl = document.getElementById(`${product}-qty`);
+        if (qEl) qEl.textContent = '0';
+        updateCart();
+        persistAndNotify(`${name} added to cart!`);
+    }
+
+    function changeCartQuantity(index, change) {
+        if (!cart[index]) return;
+        cart[index].quantity = Math.max(1, cart[index].quantity + change);
+        cart[index].total = cart[index].quantity * cart[index].price;
+        updateCart();
+        saveState();
+    }
+
+    function removeFromCart(index) {
+        if (!cart[index]) return;
+        const removedItem = cart[index];
+        cart.splice(index, 1);
+        updateCart();
+        persistAndNotify(`${removedItem.name} removed from cart!`, 'warning');
+    }
+
+    function updateCart() {
+        const cartItems = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartSubtotal = document.getElementById('cart-subtotal');
+        const cartTax = document.getElementById('cart-tax');
+        const cartTotal = document.getElementById('cart-total');
+
+        // Update cart count (total items)
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        if (cartCount) cartCount.textContent = totalItems;
+
+        // Clear cart display
+        cartItems.innerHTML = '';
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p>Your cart is empty. Start adding products!</p>';
+            cartSubtotal.textContent = fmtINR(0);
+            cartTax.textContent = fmtINR(0);
+            cartTotal.textContent = fmtINR(0);
+            saveState();
+            return;
+        }
+
+        // Calculate totals
+        const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
+        const tax = subtotal * 0.05; // 5% tax
+        const total = subtotal + tax;
+
+        // Update summary
+        cartSubtotal.textContent = fmtINR(subtotal.toFixed(0));
+        cartTax.textContent = fmtINR(tax.toFixed(0));
+        cartTotal.textContent = fmtINR(total.toFixed(0));
+
+        // Add items to cart display
+        cart.forEach((item, index) => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'cart-item';
+            itemElement.innerHTML = `
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">${fmtINR(item.price)} each</div>
+                </div>
+                <div class="cart-item-quantity">
+                    <button class="quantity-btn" aria-label="Decrease quantity" onclick="changeCartQuantity(${index}, -1)">-</button>
+                    <span class="quantity-display">${item.quantity}</span>
+                    <button class="quantity-btn" aria-label="Increase quantity" onclick="changeCartQuantity(${index}, 1)">+</button>
+                </div>
+                <div class="cart-item-total">
+                    ${fmtINR(item.total)}
+                </div>
+                <button class="remove-btn" onclick="removeFromCart(${index})" title="Remove item">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            cartItems.appendChild(itemElement);
+        });
+
+        saveState();
+    }
+
+    function toggleCart() {
+        document.querySelector('.cart-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // -------------------- CHECKOUT FLOW --------------------
+    function showCheckout() {
+        if (cart.length === 0) {
+            showNotification('Your cart is empty!', 'warning');
+            return;
+        }
+        const section = document.getElementById('checkout-section');
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth' });
+        saveState();
+    }
+
+    function selectPayment(method, evt) {
+        selectedPayment = method;
+        document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+        if (evt?.currentTarget) evt.currentTarget.classList.add('selected');
+        saveState();
+    }
+
+    function validEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).toLowerCase());
+    }
+
+    function placeOrder() {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
+
+        if (!name || !email || !phone || !address) {
+            showNotification('Please fill all the fields', 'warning');
+            return;
+        }
+        if (!validEmail(email)) {
+            showNotification('Please enter a valid email address', 'warning');
+            return;
+        }
+        if (!selectedPayment) {
+            showNotification('Please select a payment method', 'warning');
+            return;
+        }
+
+        // Generate random order ID
+        const orderId = 'MF' + Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('order-id').textContent = orderId;
+
+        // Show success message
+        document.getElementById('checkout-section').style.display = 'none';
+        const success = document.getElementById('order-success');
+        success.style.display = 'block';
+        success.scrollIntoView({ behavior: 'smooth' });
+
+        // Clear cart & reset payment
+        cart = [];
+        selectedPayment = '';
+        document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+        updateCart();
+
+        // Reset form but keep name/email for convenience
+        document.getElementById('address').value = '';
+        document.getElementById('phone').value = '';
+
+        persistAndNotify('Order placed successfully!');
+    }
+
+    // -------------------- NOTIFICATIONS --------------------
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.innerText = message;
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.right = '20px';
+        notification.style.backgroundColor =
+            type === 'success' ? 'var(--primary-light)' :
+            type === 'warning' ? 'var(--warning)' : 'var(--danger)';
+        notification.style.color = 'white';
+        notification.style.padding = '10px 20px';
+        notification.style.borderRadius = '8px';
+        notification.style.zIndex = '1000';
+        notification.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+        notification.style.maxWidth = '80vw';
+        notification.style.fontFamily = 'var(--font-body)';
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.remove(), 3000);
+    }
+
+    // -------------------- INIT --------------------
+    (function init() {
+        // Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Load saved state and render
+        loadState();
+        updateCart();
+
+        // Persist draft inputs as the user types
+        ['name','email','phone','address'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', saveState);
+        });
+    })();
+</script>
+</body>
+</html>
